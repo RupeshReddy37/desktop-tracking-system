@@ -133,11 +133,17 @@ target/surefire-reports/
 # ---------- QA / artifact folders ----------
 qa/
 
-# ---------- GitHub (allow CODEOWNERS and workflows, ignore agent tooling) ----------
+# ---------- GitHub (allow standard automation files, ignore agent tooling) ----------
 .github/*
 !.github/CODEOWNERS
+!.github/dependabot.yml
+!.github/LABELS.md
+!.github/PULL_REQUEST_TEMPLATE.md
 !.github/workflows/
 !.github/workflows/**
+!.github/ISSUE_TEMPLATE/
+!.github/ISSUE_TEMPLATE/**
+
 
 
 # ---------- Misc ----------

@@ -1,0 +1,44 @@
+name: Documentation
+description: Report a documentation issue or request documentation
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve our documentation.
+  - type: dropdown
+    id: type
+    attributes:
+      label: Documentation Type
+      description: What kind of documentation issue is this?
+      options:
+        - Incorrect / outdated documentation
+        - Missing documentation
+        - Typo or formatting issue
+        - Clarification needed
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Where is the documentation issue? Provide a file path or link.
+      placeholder: "e.g. README.md, docs/DATA-COLLECTION-POLICY.md, tracking-frontend/README.md"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the documentation issue or what should be added.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Change
+      description: If you have a suggested correction or addition, describe it here.
+    validations:
+      required: false

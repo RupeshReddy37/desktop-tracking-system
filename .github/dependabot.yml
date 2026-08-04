@@ -1,0 +1,88 @@
+version: 2
+updates:
+  # Maven dependencies — Desktop Agent
+  - package-ecosystem: "maven"
+    directory: "/tracking-agent"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Calcutta"
+    open-pull-requests-limit: 10
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework.boot:*"
+        update-types:
+          - "minor"
+          - "patch"
+      maven-plugins:
+        patterns:
+          - "org.apache.maven.plugins:*"
+          - "org.codehaus.mojo:*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Maven dependencies — Backend Server
+  - package-ecosystem: "maven"
+    directory: "/tracking-server"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Calcutta"
+    open-pull-requests-limit: 10
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework.boot:*"
+        update-types:
+          - "minor"
+          - "patch"
+      maven-plugins:
+        patterns:
+          - "org.apache.maven.plugins:*"
+          - "org.codehaus.mojo:*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # npm dependencies — Frontend
+  - package-ecosystem: "npm"
+    directory: "/tracking-frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Calcutta"
+    open-pull-requests-limit: 10
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+        update-types:
+          - "minor"
+          - "patch"
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Calcutta"
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns:
+          - "*"
