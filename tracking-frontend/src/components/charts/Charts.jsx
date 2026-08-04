@@ -103,7 +103,66 @@ export function StatusDonut({ counts }) {
   );
 }
 
+export function CategoryDonut({ buckets }) {
+  const total = Math.max(1, Number(buckets?.total || 0));
+  const segments = [
+    { key: 'Productive', label: 'Productive', value: Number(buckets?.Productive || 0), color: '#16a34a' },
+    { key: 'Neutral', label: 'Neutral', value: Number(buckets?.Neutral || 0), color: '#f59e0b' },
+    { key: 'Unproductive', label: 'Unproductive', value: Number(buckets?.Unproductive || 0), color: '#dc2626' },
+    { key: 'Uncategorized', label: 'Uncategorized', value: Number(buckets?.Uncategorized || 0), color: '#6b7280' }
+  ];
+
+  let offset = 0;
+  const circumference = 2 * Math.PI * 42;
+
+  return (
+    <section className="panel donut-panel">
+      <div className="panel-head">
+        <div>
+          <h2>Category distribution</h2>
+          <p>Share of tracked active time by app category.</p>
+        </div>
+      </div>
+      <div className="donut-wrap">
+        <svg viewBox="0 0 100 100" className="donut">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#e5e7eb" strokeWidth="12" />
+          {segments.map((segment) => {
+            const dash = (segment.value / total) * circumference;
+            const circle = (
+              <circle
+                key={segment.key}
+                cx="50"
+                cy="50"
+                r="42"
+                fill="none"
+                stroke={segment.color}
+                strokeWidth="12"
+                strokeDasharray={`${dash} ${circumference - dash}`}
+                strokeDashoffset={-offset}
+                transform="rotate(-90 50 50)"
+              />
+            );
+            offset += dash;
+            return circle;
+          })}
+          <text x="50" y="48" textAnchor="middle" className="donut-total">{buckets?.total || 0}</text>
+          <text x="50" y="60" textAnchor="middle" className="donut-caption">seconds</text>
+        </svg>
+        <div className="donut-legend">
+          {segments.map((segment) => (
+            <span key={segment.key}>
+              <i style={{ backgroundColor: segment.color }} />
+              {segment.label} <b>{Math.round((segment.value / total) * 100)}%</b>
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function ReportChart({ rows, mode }) {
+
   if (!rows.length) {
     return <EmptyState title="No chart data" text="No usage rows were returned for this range." />;
   }

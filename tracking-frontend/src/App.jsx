@@ -11,6 +11,7 @@ import { AddEmployeePage } from './pages/AddEmployee';
 import { ReportsPage } from './pages/Reports';
 import { AnomaliesPage } from './pages/Anomalies';
 import { DevicesPage } from './pages/Devices';
+import { CategoriesPage } from './pages/Categories';
 import { SettingsPage } from './pages/Settings';
 import { ApiPage } from './pages/Api';
 import { UnauthorizedPage, ForbiddenPage } from './pages/Unauthorized';
@@ -53,6 +54,7 @@ function AppRoutes() {
           <Route path="/reports" element={<ReportsPage selectedDate={selectedDate} onToast={showToast} />} />
           <Route path="/anomalies" element={<AnomaliesPage onToast={showToast} />} />
           <Route path="/devices" element={<DevicesPage onToast={showToast} />} />
+          <Route path="/categories" element={<CategoriesPage onToast={showToast} />} />
           <Route path="/settings" element={<SettingsPage onToast={showToast} />} />
           <Route path="/api-console" element={<ApiPage />} />
         </Route>

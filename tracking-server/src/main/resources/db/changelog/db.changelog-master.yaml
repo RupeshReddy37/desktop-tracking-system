@@ -34,5 +34,11 @@ databaseChangeLog:
   - include:
       file: db/changelog/013-add-device-credentials.yaml
 
+  - include:
+      file: db/changelog/014-create-app-category-table.yaml
+
+  - include:
+      file: db/changelog/015-create-category-rule-table.yaml
+
 
 

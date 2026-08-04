@@ -1,0 +1,81 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 015-create-category-rule-table
+      author: rupesh
+
+      changes:
+
+        - createTable:
+            tableName: category_rule
+            remarks: Ordered matching rule that classifies an application or website into a category
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: category_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: match_type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: pattern
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: priority
+                  type: INTEGER
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: enabled
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: category_rule
+            baseColumnNames: category_id
+            constraintName: fk_category_rule_category
+            referencedTableName: app_category
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - createIndex:
+            tableName: category_rule
+            indexName: idx_category_rule_lookup
+            columns:
+              - column:
+                  name: enabled
+              - column:
+                  name: priority

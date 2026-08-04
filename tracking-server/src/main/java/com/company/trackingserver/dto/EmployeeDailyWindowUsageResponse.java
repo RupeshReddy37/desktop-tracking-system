@@ -16,5 +16,6 @@ public record EmployeeDailyWindowUsageResponse(
         String fileName,
         Long activeSeconds,
         Long idleSeconds,
-        Long trackedSeconds) {
+        Long trackedSeconds,
+        String category) {
 }

@@ -9,7 +9,8 @@ import {
   Code2,
   CalendarDays,
   AppWindow,
-  Layers
+  Layers,
+  Tags
 } from 'lucide-react';
 
 
@@ -20,6 +21,7 @@ export const NAV_ITEMS = [
   { id: 'reports', label: 'Activity Reports', path: '/reports', icon: ClipboardList },
   { id: 'anomalies', label: 'Anomaly Review', path: '/anomalies', icon: ShieldAlert },
   { id: 'devices', label: 'Devices / Agents', path: '/devices', icon: Monitor },
+  { id: 'categories', label: 'Categories', path: '/categories', icon: Tags },
   { id: 'settings', label: 'Settings', path: '/settings', icon: Settings2 },
   { id: 'api', label: 'API Console', path: '/api-console', icon: Code2 }
 ];

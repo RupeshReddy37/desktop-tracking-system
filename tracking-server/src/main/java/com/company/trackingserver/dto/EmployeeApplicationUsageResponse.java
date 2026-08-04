@@ -7,5 +7,6 @@ public record EmployeeApplicationUsageResponse(
         Long idleSeconds,
         Long trackedSeconds,
         Long employeeCount,
-        Long dayCount) {
+        Long dayCount,
+        String category) {
 }

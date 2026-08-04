@@ -3147,3 +3147,60 @@ th {
     width: 100%;
   }
 }
+
+/* App categorization */
+.form-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.form-actions .action-btn {
+  align-self: flex-end;
+}
+
+.color-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  vertical-align: middle;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.12);
+  color: #4f46e5;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.test-result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(44, 112, 240, 0.24);
+  border-radius: 10px;
+  background: rgba(44, 112, 240, 0.06);
+}
+
+.test-result strong {
+  font-size: 15px;
+  color: #1b2d4a;
+}
+
+.test-result span {
+  font-size: 13px;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.test-result small {
+  font-size: 12px;
+  color: #64748b;
+}

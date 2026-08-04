@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Users, Activity, Clock3, Lock, WifiOff, Filter, X, Eye } from 'lucide-react';
-import { getHomeDashboard, getDailySummary } from '../services/endpoints';
+import { getHomeDashboard, getDailySummary, getApplicationUsage } from '../services/endpoints';
 import { formatCompactDuration, safeText } from '../lib/format';
 import { TREND_MODES, STATUS_OPTIONS } from '../constants/navigation';
 import { groupTrendRows, percent, employeeName, initialsFor, statusClass, displayLastSeen, normalizeStatus } from '../utils/aggregate';
 import { rangeForTrend, todayDate } from '../utils/date';
 import { KpiCard, SelectControl, ActionButton, EmptyState, ErrorBanner, Panel } from '../components/ui/Primitives';
 import { DataTable } from '../components/ui/DataTable';
-import { TrendChart, StatusDonut } from '../components/charts/Charts';
+import { TrendChart, StatusDonut, CategoryDonut } from '../components/charts/Charts';
 import { ProfilePanel } from '../components/profile/ProfilePanel';
+
 
 export function DashboardPage({ selectedDate, onToast }) {
   const [employees, setEmployees] = useState([]);
@@ -20,8 +21,10 @@ export function DashboardPage({ selectedDate, onToast }) {
   const [trendMode, setTrendMode] = useState('day');
   const [trendRows, setTrendRows] = useState([]);
   const [trendLoading, setTrendLoading] = useState(false);
+  const [categoryBuckets, setCategoryBuckets] = useState(null);
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
+
 
   async function loadDashboard() {
     setLoading(true);
@@ -61,6 +64,23 @@ export function DashboardPage({ selectedDate, onToast }) {
     }
   }
 
+  async function loadCategories() {
+    try {
+      const rows = await getApplicationUsage({ date: selectedDate, page: 0, size: 500 });
+      const buckets = { Productive: 0, Neutral: 0, Unproductive: 0, Uncategorized: 0 };
+      (Array.isArray(rows) ? rows : []).forEach((row) => {
+        const category = row.category || 'Uncategorized';
+        const seconds = Number(row.activeSeconds || row.active || 0);
+        if (buckets[category] !== undefined) buckets[category] += seconds;
+        else buckets.Uncategorized += seconds;
+      });
+      buckets.total = Object.values(buckets).reduce((sum, value) => sum + value, 0);
+      setCategoryBuckets(buckets);
+    } catch {
+      setCategoryBuckets(null);
+    }
+  }
+
   useEffect(() => {
     loadDashboard();
   }, [selectedDate]);
@@ -68,6 +88,11 @@ export function DashboardPage({ selectedDate, onToast }) {
   useEffect(() => {
     loadTrend(trendMode);
   }, [trendMode]);
+
+  useEffect(() => {
+    loadCategories();
+  }, [selectedDate]);
+
 
   async function openEmployeeProfile(employee) {
     setProfile(employee);
@@ -169,7 +194,9 @@ export function DashboardPage({ selectedDate, onToast }) {
             )}
           </Panel>
           <StatusDonut counts={derivedCounts} />
+          {categoryBuckets ? <CategoryDonut buckets={categoryBuckets} /> : null}
         </section>
+
 
         <section className="panel table-panel">
           <div className="panel-head">

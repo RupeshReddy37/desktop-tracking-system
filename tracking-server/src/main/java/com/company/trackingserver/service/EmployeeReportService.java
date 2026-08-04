@@ -19,6 +19,7 @@ public class EmployeeReportService {
 
     private final EmployeeDailySummaryRepository employeeDailySummaryRepository;
     private final EmployeeDailyWindowUsageRepository employeeDailyWindowUsageRepository;
+    private final ClassificationService classificationService;
 
     public List<EmployeeDailySummaryResponse> getDailySummary(
             Long employeeId,
@@ -72,14 +73,19 @@ public class EmployeeReportService {
                 startDate,
                 endDate)
                 .stream()
-                .map(row -> new EmployeeApplicationUsageResponse(
-                        blankToDefault(row.getApplicationName(), "Unknown"),
-                        blankToEmpty(row.getProcessName()),
-                        row.getActiveSeconds() == null ? 0L : row.getActiveSeconds(),
-                        row.getIdleSeconds() == null ? 0L : row.getIdleSeconds(),
-                        row.getTrackedSeconds() == null ? 0L : row.getTrackedSeconds(),
-                        row.getEmployeeCount() == null ? 0L : row.getEmployeeCount(),
-                        row.getDayCount() == null ? 0L : row.getDayCount()))
+                .map(row -> {
+                    String appName = blankToDefault(row.getApplicationName(), "Unknown");
+                    String category = categoryOf(appName, null);
+                    return new EmployeeApplicationUsageResponse(
+                            appName,
+                            blankToEmpty(row.getProcessName()),
+                            row.getActiveSeconds() == null ? 0L : row.getActiveSeconds(),
+                            row.getIdleSeconds() == null ? 0L : row.getIdleSeconds(),
+                            row.getTrackedSeconds() == null ? 0L : row.getTrackedSeconds(),
+                            row.getEmployeeCount() == null ? 0L : row.getEmployeeCount(),
+                            row.getDayCount() == null ? 0L : row.getDayCount(),
+                            category);
+                })
                 .toList();
     }
 
@@ -97,6 +103,7 @@ public class EmployeeReportService {
     }
 
     private EmployeeDailyWindowUsageResponse toWindowResponse(EmployeeDailyWindowUsage usage) {
+        String appName = blankToDefault(usage.getApplicationName(), "Unknown");
         return new EmployeeDailyWindowUsageResponse(
                 usage.getEmployee().getId(),
                 usage.getEmployee().getEmployeeCode(),
@@ -104,14 +111,20 @@ public class EmployeeReportService {
                 usage.getEmployee().getLastName(),
                 usage.getEmployee().getEmail(),
                 usage.getUsageDate(),
-                blankToDefault(usage.getApplicationName(), "Unknown"),
+                appName,
                 blankToEmpty(usage.getProcessName()),
                 blankToEmpty(usage.getWindowTitle()),
                 blankToEmpty(usage.getDocumentTitle()),
                 blankToEmpty(usage.getFileName()),
                 safeLong(usage.getActiveSeconds()),
                 safeLong(usage.getIdleSeconds()),
-                safeLong(usage.getTrackedSeconds()));
+                safeLong(usage.getTrackedSeconds()),
+                categoryOf(appName, usage.getWindowTitle()));
+    }
+
+    private String categoryOf(String appName, String windowTitle) {
+        var classification = classificationService.classify(appName, windowTitle);
+        return classification == null ? "Uncategorized" : classification.categoryName();
     }
 
     private long safeLong(Long value) {

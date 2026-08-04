@@ -54,3 +54,39 @@ export function getDevices() {
 export function getServerHealth() {
   return api.get('/actuator/health', { auth: false });
 }
+
+export function getCategories() {
+  return api.get('/api/v1/categories');
+}
+
+export function createCategory(payload) {
+  return api.post('/api/v1/categories', payload);
+}
+
+export function updateCategory(id, payload) {
+  return api.put(`/api/v1/categories/${id}`, payload);
+}
+
+export function deleteCategory(id) {
+  return api.delete(`/api/v1/categories/${id}`);
+}
+
+export function getCategoryRules() {
+  return api.get('/api/v1/categories/rules');
+}
+
+export function createCategoryRule(payload) {
+  return api.post('/api/v1/categories/rules', payload);
+}
+
+export function updateCategoryRule(id, payload) {
+  return api.put(`/api/v1/categories/rules/${id}`, payload);
+}
+
+export function deleteCategoryRule(id) {
+  return api.delete(`/api/v1/categories/rules/${id}`);
+}
+
+export function classifyApp(params) {
+  return api.get(`/api/v1/categories/classify${toQuery(params)}`);
+}

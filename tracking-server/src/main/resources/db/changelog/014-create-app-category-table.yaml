@@ -1,0 +1,54 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 014-create-app-category-table
+      author: rupesh
+
+      changes:
+
+        - createTable:
+            tableName: app_category
+            remarks: Named productivity category used to classify applications and websites
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: color
+                  type: VARCHAR(20)
+
+              - column:
+                  name: is_productive
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: app_category
+            constraintName: uq_app_category_name
+            columnNames: "name"
