@@ -28,6 +28,9 @@ jobs:
           java-version: '21'
           cache: maven
 
+      - name: Make Maven Wrapper Executable
+        run: chmod +x mvnw
+
       - name: Build with Maven
         run: ./mvnw -B -ntp clean package
 
@@ -47,6 +50,9 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+
+      - name: Make Maven Wrapper Executable
+        run: chmod +x mvnw
 
       - name: Build with Maven
         run: ./mvnw -B -ntp clean package
