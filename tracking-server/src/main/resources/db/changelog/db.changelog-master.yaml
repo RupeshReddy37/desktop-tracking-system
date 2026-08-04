@@ -27,3 +27,8 @@ databaseChangeLog:
       file: db/changelog/010-add-reporting-performance-indexes.yaml
   - include:
       file: db/changelog/011-create-employee-daily-report-tables.yaml
+
+  - include:
+      file: db/changelog/012-create-user-account-table.yaml
+
+

@@ -4,6 +4,7 @@ import com.company.trackingserver.dto.DashboardHomeResponse;
 import com.company.trackingserver.service.DashboardHomeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +20,9 @@ public class DashboardHomeController {
     private final DashboardHomeService dashboardHomeService;
 
     @GetMapping("/home")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public DashboardHomeResponse getHomeDashboard(
+
             @RequestParam(required = false) Long employeeId,
             @RequestParam(required = false) String employeeCode,
             @RequestParam(required = false) String email,

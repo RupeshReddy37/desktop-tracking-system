@@ -50,6 +50,14 @@ tracking:
   logging:
     directory: ${TRACKING_SERVER_LOG_DIR:logs}
 
+  security:
+    jwt:
+      # Base64-encoded 256-bit (or larger) secret. Override in production via TRACKING_JWT_SECRET.
+      secret: ${TRACKING_JWT_SECRET:Y2hhbmdlLXRoaXMtc2VjcmV0LWluLXByb2R1Y3Rpb24tMzItYnl0ZXMtbG9uZy1rZXk=}
+      access-token-expiration-ms: ${TRACKING_JWT_ACCESS_EXPIRATION_MS:900000}
+      refresh-token-expiration-ms: ${TRACKING_JWT_REFRESH_EXPIRATION_MS:604800000}
+
+
 management:
 
   endpoints:

@@ -6,10 +6,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 
 import com.company.trackingserver.dto.ErrorResponse;
 
@@ -67,6 +70,33 @@ public class GlobalExceptionHandler {
                 "Resource not found",
                 request.getRequestURI());
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+            AccessDeniedException exception,
+            HttpServletRequest request) {
+
+        log.warn("Access denied: path={}", request.getRequestURI());
+
+        return buildResponse(
+                HttpStatus.FORBIDDEN,
+                "Access denied",
+                request.getRequestURI());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(
+            AuthenticationException exception,
+            HttpServletRequest request) {
+
+        log.warn("Authentication failed: path={}", request.getRequestURI());
+
+        return buildResponse(
+                HttpStatus.UNAUTHORIZED,
+                "Authentication required",
+                request.getRequestURI());
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(
