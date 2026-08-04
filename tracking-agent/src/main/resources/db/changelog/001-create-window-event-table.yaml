@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-window-event-table
+      author: rupesh
+
+      changes:
+        - createTable:
+            tableName: window_event
+
+            columns:
+
+              - column:
+                  name: id
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: window_title
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: started_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: ended_at
+                  type: TIMESTAMP

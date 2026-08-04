@@ -1,0 +1,91 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 002-create-device-table
+      author: rupesh
+
+      changes:
+
+        - createTable:
+            tableName: device
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: hostname
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: operating_system
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: agent_version
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: last_seen_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: device
+            baseColumnNames: employee_id
+
+            referencedTableName: employee
+            referencedColumnNames: id
+
+            constraintName: fk_device_employee
+
+        - createIndex:
+            tableName: device
+            indexName: idx_device_employee
+
+            columns:
+              - column:
+                  name: employee_id
+
+        - createIndex:
+            tableName: device
+            indexName: idx_device_hostname
+
+            columns:
+              - column:
+                  name: hostname

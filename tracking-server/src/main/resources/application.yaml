@@ -1,0 +1,80 @@
+server:
+  port: ${SERVER_PORT:8081}
+  shutdown: graceful
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: ${SERVER_ACCESS_LOG_DIR:logs}
+      prefix: access
+      suffix: .log
+      pattern: '%t "%r" %s %D'
+
+spring:
+
+  application:
+    name: tracking-server
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/tracking_server}
+    username: ${DB_USERNAME:tracking_admin}
+    password: ${DB_PASSWORD:tracking_password}
+
+    hikari:
+      pool-name: TrackingServerPool
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      leak-detection-threshold: 60000
+
+  jpa:
+    open-in-view: false
+
+    hibernate:
+      ddl-auto: none
+
+    show-sql: false
+
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: UTC
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+tracking:
+  logging:
+    directory: ${TRACKING_SERVER_LOG_DIR:logs}
+
+management:
+
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+
+  level:
+    root: INFO
+    com.company.trackingserver: INFO
+    org.hibernate.SQL: WARN
+    org.springframework.web: WARN
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+  api-docs:
+    path: /v3/api-docs

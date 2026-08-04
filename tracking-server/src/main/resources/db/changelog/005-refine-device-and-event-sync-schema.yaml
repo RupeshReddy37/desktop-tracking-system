@@ -1,0 +1,93 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 005-001-add-agent-sync-columns
+      author: codex
+      changes:
+
+        - addColumn:
+            tableName: device
+            columns:
+              - column:
+                  name: agent_device_id
+                  type: VARCHAR(100)
+
+        - addColumn:
+            tableName: window_event
+            columns:
+              - column:
+                  name: agent_event_id
+                  type: BIGINT
+
+        - addColumn:
+            tableName: activity_event
+            columns:
+              - column:
+                  name: agent_event_id
+                  type: BIGINT
+
+  - changeSet:
+      id: 005-002-add-agent-sync-constraints-and-indexes
+      author: codex
+      changes:
+
+        - addUniqueConstraint:
+            tableName: device
+            columnNames: agent_device_id
+            constraintName: uq_device_agent_device_id
+
+        - addUniqueConstraint:
+            tableName: window_event
+            columnNames: device_id, agent_event_id
+            constraintName: uq_window_event_device_agent_event
+
+        - addUniqueConstraint:
+            tableName: activity_event
+            columnNames: device_id, agent_event_id
+            constraintName: uq_activity_event_device_agent_event
+
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_device_started
+            columns:
+              - column:
+                  name: device_id
+              - column:
+                  name: started_at
+
+        - createIndex:
+            tableName: activity_event
+            indexName: idx_activity_device_started
+            columns:
+              - column:
+                  name: device_id
+              - column:
+                  name: started_at
+
+  - changeSet:
+      id: 005-003-drop-redundant-employee-code-index
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - indexExists:
+            tableName: employee
+            indexName: idx_employee_code
+      changes:
+
+        - dropIndex:
+            tableName: employee
+            indexName: idx_employee_code
+
+  - changeSet:
+      id: 005-004-drop-redundant-employee-email-index
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - indexExists:
+            tableName: employee
+            indexName: idx_employee_email
+      changes:
+
+        - dropIndex:
+            tableName: employee
+            indexName: idx_employee_email

@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/001-create-window-event-table.yaml
+  - include:
+      file: db/changelog/002-create-sync-table.yaml
+  - include:
+      file: db/changelog/003-add-indexes-and-synced-column.yaml
+  - include:
+        file: db/changelog/004-create-activity-event-table.yaml
+  - include:
+      file: db/changelog/005-create-agent-device-state-table.yaml
+  - include:
+      file: db/changelog/006-add-window-metadata.yaml
+  - include:
+      file: db/changelog/007-add-heartbeat-and-sync-retention-columns.yaml
+  - include:
+      file: db/changelog/008-add-recovered-and-system-events.yaml

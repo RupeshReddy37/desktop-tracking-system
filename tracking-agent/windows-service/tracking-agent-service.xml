@@ -1,0 +1,22 @@
+<service>
+  <id>tracking-agent</id>
+  <name>Tracking Agent</name>
+  <description>Company desktop tracking agent.</description>
+
+  <executable>java</executable>
+  <arguments>-jar "%BASE%\tracking-agent-0.0.1-SNAPSHOT.jar" --spring.config.additional-location=optional:file:%BASE%\config\application.yaml</arguments>
+  <workingdirectory>%BASE%</workingdirectory>
+
+  <startmode>Automatic</startmode>
+  <stoptimeout>25 sec</stoptimeout>
+  <stopparentprocessfirst>false</stopparentprocessfirst>
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="30 sec"/>
+  <onfailure action="restart" delay="60 sec"/>
+  <resetfailure>1 hour</resetfailure>
+
+  <log mode="roll-by-size">
+    <sizeThreshold>10485760</sizeThreshold>
+    <keepFiles>5</keepFiles>
+  </log>
+</service>

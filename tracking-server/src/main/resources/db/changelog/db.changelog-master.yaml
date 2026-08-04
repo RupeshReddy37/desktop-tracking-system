@@ -1,0 +1,29 @@
+databaseChangeLog:
+
+  - include:
+      file: db/changelog/001-create-employee-table.yaml
+
+  - include:
+      file: db/changelog/002-create-device-table.yaml
+
+  - include:
+      file: db/changelog/003-create-window-event-table.yaml
+
+  - include:
+      file: db/changelog/004-create-activity-event-table.yaml
+
+  - include:
+      file: db/changelog/005-refine-device-and-event-sync-schema.yaml
+
+  - include:
+      file: db/changelog/006-add-window-metadata-and-dashboard-schema.yaml
+  - include:
+      file: db/changelog/007-add-recovered-system-events-and-utc-timestamps.yaml
+  - include:
+      file: db/changelog/008-enforce-one-device-per-employee-and-utc-error-timestamps.yaml
+  - include:
+      file: db/changelog/009-create-activity-anomaly-table.yaml
+  - include:
+      file: db/changelog/010-add-reporting-performance-indexes.yaml
+  - include:
+      file: db/changelog/011-create-employee-daily-report-tables.yaml

@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: tracking-agent
+
+  main:
+    lazy-initialization: true
+    web-application-type: none
+
+  datasource:
+    url: ${TRACKING_DB_URL:jdbc:sqlite:tracking-agent.db?busy_timeout=5000&journal_mode=WAL&synchronous=NORMAL&foreign_keys=true}
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      maximum-pool-size: 1
+      minimum-idle: 1
+      pool-name: TrackingAgentPool
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.community.dialect.SQLiteDialect
+
+tracking:
+  logging:
+    directory: ${TRACKING_LOG_DIR:logs}
+  server-url: ${TRACKING_SERVER_URL:http://localhost:8081}
+  employee-code: ${TRACKING_EMPLOYEE_CODE:}
+  prompt-for-employee-code: ${TRACKING_PROMPT_FOR_EMPLOYEE_CODE:true}
+  agent-version: ${TRACKING_AGENT_VERSION:1.0.0}
+
+  sync:
+    enabled: ${TRACKING_SYNC_ENABLED:true}
+    batch-size: ${TRACKING_SYNC_BATCH_SIZE:100}
+    request-timeout-seconds: ${TRACKING_SYNC_REQUEST_TIMEOUT_SECONDS:15}
+    shutdown-timeout-seconds: ${TRACKING_SHUTDOWN_SYNC_TIMEOUT_SECONDS:20}
+    retention-days-after-sync: ${TRACKING_RETENTION_DAYS_AFTER_SYNC:4}
+    initial-delay-ms: ${TRACKING_SYNC_INITIAL_DELAY_MS:60000}
+    fixed-delay-ms: ${TRACKING_SYNC_FIXED_DELAY_MS:120000}
+
+  activity:
+    idle-threshold-seconds: ${TRACKING_IDLE_THRESHOLD_SECONDS:300}
+    long-session-max-seconds: ${TRACKING_LONG_SESSION_MAX_SECONDS:900}
+    window-switch-debounce-seconds: ${TRACKING_WINDOW_SWITCH_DEBOUNCE_SECONDS:5}
+    poll-initial-delay-ms: ${TRACKING_ACTIVITY_POLL_INITIAL_DELAY_MS:10000}
+    poll-delay-ms: ${TRACKING_ACTIVITY_POLL_DELAY_MS:5000}
+    suspend-resume-gap-seconds: ${TRACKING_SUSPEND_RESUME_GAP_SECONDS:120}
+
+  retention:
+    initial-delay-ms: ${TRACKING_RETENTION_INITIAL_DELAY_MS:300000}
+    fixed-delay-ms: ${TRACKING_RETENTION_FIXED_DELAY_MS:21600000}
+
+logging:
+  level:
+    root: INFO
+    com.company.trackingagent: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.orm.jdbc.bind: WARN
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

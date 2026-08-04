@@ -1,0 +1,66 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 005-create-agent-device-state-table
+      author: codex
+      changes:
+
+        - createTable:
+            tableName: agent_device_state
+            columns:
+              - column:
+                  name: id
+                  type: INTEGER
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: agent_device_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: server_device_id
+                  type: BIGINT
+
+              - column:
+                  name: registered_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: last_sync_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            tableName: agent_device_state
+            indexName: idx_agent_device_state_server_device
+            columns:
+              - column:
+                  name: server_device_id
+
+  - changeSet:
+      id: 005-add-activity-sync-index
+      author: codex
+      changes:
+
+        - createIndex:
+            tableName: activity_event
+            indexName: idx_activity_sync_status
+            columns:
+              - column:
+                  name: synced

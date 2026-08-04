@@ -1,0 +1,80 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 003-create-window-event-table
+      author: rupesh
+
+      changes:
+
+        - createTable:
+            tableName: window_event
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: device_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: window_title
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: started_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: ended_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: window_event
+            baseColumnNames: device_id
+
+            referencedTableName: device
+            referencedColumnNames: id
+
+            constraintName: fk_window_event_device
+
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_device
+
+            columns:
+              - column:
+                  name: device_id
+
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_started
+
+            columns:
+              - column:
+                  name: started_at
+
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_ended
+
+            columns:
+              - column:
+                  name: ended_at

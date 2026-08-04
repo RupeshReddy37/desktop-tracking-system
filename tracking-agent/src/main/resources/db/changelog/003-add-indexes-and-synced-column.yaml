@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-add-indexes-and-synced-column-to-window-event
+      author: rupesh
+
+      changes:
+        - addColumn:
+            tableName: window_event
+            columns:
+              - column:
+                  name: synced
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+
+        - createIndex:
+            indexName: idx_window_ended_at
+            tableName: window_event
+            columns:
+              - column:
+                  name: ended_at
+
+        - createIndex:
+            indexName: idx_window_started_at
+            tableName: window_event
+            columns:
+              - column:
+                  name: started_at
+
+        - createIndex:
+            indexName: idx_window_sync_status
+            tableName: window_event
+            columns:
+              - column:
+                  name: synced

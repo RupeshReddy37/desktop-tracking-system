@@ -1,0 +1,28 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 006-add-window-event-metadata
+      author: codex
+      changes:
+
+        - addColumn:
+            tableName: window_event
+            columns:
+              - column:
+                  name: process_name
+                  type: VARCHAR(255)
+              - column:
+                  name: application_name
+                  type: VARCHAR(255)
+              - column:
+                  name: document_title
+                  type: VARCHAR(500)
+
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_application_started
+            columns:
+              - column:
+                  name: application_name
+              - column:
+                  name: started_at

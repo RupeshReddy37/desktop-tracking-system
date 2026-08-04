@@ -1,0 +1,135 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 007-001-add-recovered-flags
+      author: codex
+      changes:
+        - addColumn:
+            tableName: window_event
+            columns:
+              - column:
+                  name: recovered
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+        - addColumn:
+            tableName: activity_event
+            columns:
+              - column:
+                  name: recovered
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 007-002-create-system-event-table
+      author: codex
+      changes:
+        - createTable:
+            tableName: system_event
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: device_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: agent_event_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: observed_at
+                  type: TIMESTAMPTZ
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMPTZ
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: system_event
+            baseColumnNames: device_id
+            referencedTableName: device
+            referencedColumnNames: id
+            constraintName: fk_system_event_device
+
+        - addUniqueConstraint:
+            tableName: system_event
+            columnNames: device_id, agent_event_id
+            constraintName: uq_system_event_device_agent_event
+
+        - createIndex:
+            tableName: system_event
+            indexName: idx_system_event_device_observed
+            columns:
+              - column:
+                  name: device_id
+              - column:
+                  name: observed_at
+
+        - createIndex:
+            tableName: system_event
+            indexName: idx_system_event_type
+            columns:
+              - column:
+                  name: type
+
+  - changeSet:
+      id: 007-003-convert-timestamps-to-utc-timestamptz
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - dbms:
+            type: postgresql
+      changes:
+        - sql:
+            sql: |
+              ALTER TABLE employee
+                ALTER COLUMN created_at TYPE TIMESTAMPTZ USING created_at AT TIME ZONE 'UTC',
+                ALTER COLUMN updated_at TYPE TIMESTAMPTZ USING updated_at AT TIME ZONE 'UTC';
+
+              ALTER TABLE device
+                ALTER COLUMN last_seen_at TYPE TIMESTAMPTZ USING last_seen_at AT TIME ZONE 'UTC',
+                ALTER COLUMN created_at TYPE TIMESTAMPTZ USING created_at AT TIME ZONE 'UTC',
+                ALTER COLUMN updated_at TYPE TIMESTAMPTZ USING updated_at AT TIME ZONE 'UTC';
+
+              ALTER TABLE window_event
+                ALTER COLUMN started_at TYPE TIMESTAMPTZ USING started_at AT TIME ZONE 'UTC',
+                ALTER COLUMN ended_at TYPE TIMESTAMPTZ USING ended_at AT TIME ZONE 'UTC',
+                ALTER COLUMN created_at TYPE TIMESTAMPTZ USING created_at AT TIME ZONE 'UTC';
+
+              ALTER TABLE activity_event
+                ALTER COLUMN started_at TYPE TIMESTAMPTZ USING started_at AT TIME ZONE 'UTC',
+                ALTER COLUMN ended_at TYPE TIMESTAMPTZ USING ended_at AT TIME ZONE 'UTC',
+                ALTER COLUMN created_at TYPE TIMESTAMPTZ USING created_at AT TIME ZONE 'UTC';
+
+              ALTER TABLE daily_app_usage
+                ALTER COLUMN updated_at TYPE TIMESTAMPTZ USING updated_at AT TIME ZONE 'UTC';
+
+  - changeSet:
+      id: 007-004-add-system-event-type-check
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - dbms:
+            type: postgresql
+      changes:
+        - sql:
+            sql: ALTER TABLE system_event ADD CONSTRAINT chk_system_event_type CHECK (type IN ('LOCK', 'UNLOCK', 'SUSPEND', 'RESUME'))

@@ -1,0 +1,61 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 007-001-add-window-heartbeat-and-sync-retention-columns
+      author: codex
+      changes:
+
+        - addColumn:
+            tableName: window_event
+            columns:
+              - column:
+                  name: last_observed_at
+                  type: TIMESTAMP
+              - column:
+                  name: synced_at
+                  type: TIMESTAMP
+
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_synced_at
+            columns:
+              - column:
+                  name: synced
+              - column:
+                  name: synced_at
+
+  - changeSet:
+      id: 007-002-add-activity-heartbeat-and-sync-retention-columns
+      author: codex
+      changes:
+
+        - addColumn:
+            tableName: activity_event
+            columns:
+              - column:
+                  name: last_observed_at
+                  type: TIMESTAMP
+              - column:
+                  name: synced_at
+                  type: TIMESTAMP
+
+        - createIndex:
+            tableName: activity_event
+            indexName: idx_activity_synced_at
+            columns:
+              - column:
+                  name: synced
+              - column:
+                  name: synced_at
+
+  - changeSet:
+      id: 007-003-drop-abandoned-sync-queue
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - tableExists:
+            tableName: sync_queue
+      changes:
+
+        - dropTable:
+            tableName: sync_queue

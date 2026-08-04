@@ -1,0 +1,43 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 004-create-activity-event-table
+      author: rupesh
+
+      changes:
+
+        - createTable:
+            tableName: activity_event
+
+            columns:
+
+              - column:
+                  name: id
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: started_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: ended_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: synced
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

@@ -1,0 +1,34 @@
+# Production override file for the Windows service.
+# Edit this file during installation/enrollment. Do not change Java code for deployment values.
+
+spring:
+  datasource:
+    url: jdbc:sqlite:C:/ProgramData/Company/TrackingAgent/tracking-agent.db
+
+tracking:
+  logging:
+    directory: C:/ProgramData/Company/TrackingAgent/logs
+  server-url: http://localhost:8081
+  employee-code:
+  prompt-for-employee-code: false
+  agent-version: 1.0.0
+
+  sync:
+    enabled: true
+    batch-size: 100
+    request-timeout-seconds: 15
+    shutdown-timeout-seconds: 20
+    retention-days-after-sync: 4
+    initial-delay-ms: 60000
+    fixed-delay-ms: 120000
+
+  activity:
+    idle-threshold-seconds: 300
+    long-session-max-seconds: 900
+    poll-initial-delay-ms: 10000
+    poll-delay-ms: 5000
+    suspend-resume-gap-seconds: 120
+
+  retention:
+    initial-delay-ms: 300000
+    fixed-delay-ms: 21600000

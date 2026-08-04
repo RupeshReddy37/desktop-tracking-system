@@ -1,0 +1,16 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 008-001-add-unique-employee-device-constraint
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - uniqueConstraintExists:
+                tableName: device
+                constraintName: uq_device_employee
+      changes:
+        - addUniqueConstraint:
+            tableName: device
+            columnNames: employee_id
+            constraintName: uq_device_employee

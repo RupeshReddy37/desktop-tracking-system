@@ -1,0 +1,140 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 006-001-add-window-event-metadata
+      author: codex
+      changes:
+
+        - addColumn:
+            tableName: window_event
+            columns:
+              - column:
+                  name: process_name
+                  type: VARCHAR(255)
+              - column:
+                  name: application_name
+                  type: VARCHAR(255)
+              - column:
+                  name: document_title
+                  type: VARCHAR(500)
+
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_application_started
+            columns:
+              - column:
+                  name: application_name
+              - column:
+                  name: started_at
+
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_process_started
+            columns:
+              - column:
+                  name: process_name
+              - column:
+                  name: started_at
+
+  - changeSet:
+      id: 006-002-add-activity-status-check
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - dbms:
+            type: postgresql
+      changes:
+
+        - sql:
+            sql: ALTER TABLE activity_event ADD CONSTRAINT chk_activity_status CHECK (status IN ('ACTIVE', 'IDLE', 'LOCKED', 'OFFLINE'))
+
+  - changeSet:
+      id: 006-003-create-daily-app-usage-table
+      author: codex
+      changes:
+
+        - createTable:
+            tableName: daily_app_usage
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: device_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: usage_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: application_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: process_name
+                  type: VARCHAR(255)
+
+              - column:
+                  name: active_seconds
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: idle_seconds
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: daily_app_usage
+            baseColumnNames: employee_id
+            referencedTableName: employee
+            referencedColumnNames: id
+            constraintName: fk_daily_app_usage_employee
+
+        - addForeignKeyConstraint:
+            baseTableName: daily_app_usage
+            baseColumnNames: device_id
+            referencedTableName: device
+            referencedColumnNames: id
+            constraintName: fk_daily_app_usage_device
+
+        - addUniqueConstraint:
+            tableName: daily_app_usage
+            columnNames: device_id, usage_date, application_name
+            constraintName: uq_daily_app_usage_device_date_app
+
+        - createIndex:
+            tableName: daily_app_usage
+            indexName: idx_daily_app_usage_employee_date
+            columns:
+              - column:
+                  name: employee_id
+              - column:
+                  name: usage_date

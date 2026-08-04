@@ -1,0 +1,83 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 010-001-add-daily-app-usage-index
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: daily_app_usage
+                indexName: idx_daily_app_usage_date_application
+      changes:
+        - createIndex:
+            tableName: daily_app_usage
+            indexName: idx_daily_app_usage_date_application
+            columns:
+              - column:
+                  name: usage_date
+              - column:
+                  name: application_name
+
+  - changeSet:
+      id: 010-002-add-activity-event-index
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: activity_event
+                indexName: idx_activity_device_started_ended
+      changes:
+        - createIndex:
+            tableName: activity_event
+            indexName: idx_activity_device_started_ended
+            columns:
+              - column:
+                  name: device_id
+              - column:
+                  name: started_at
+              - column:
+                  name: ended_at
+
+  - changeSet:
+      id: 010-003-add-window-event-index
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: window_event
+                indexName: idx_window_device_started_ended
+      changes:
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_device_started_ended
+            columns:
+              - column:
+                  name: device_id
+              - column:
+                  name: started_at
+              - column:
+                  name: ended_at
+
+  - changeSet:
+      id: 010-004-add-window-application-index
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: window_event
+                indexName: idx_window_device_application_started
+      changes:
+        - createIndex:
+            tableName: window_event
+            indexName: idx_window_device_application_started
+            columns:
+              - column:
+                  name: device_id
+              - column:
+                  name: application_name
+              - column:
+                  name: started_at

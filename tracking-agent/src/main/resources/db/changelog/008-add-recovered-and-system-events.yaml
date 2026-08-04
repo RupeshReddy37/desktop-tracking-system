@@ -1,0 +1,79 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 008-001-add-recovered-to-window-event
+      author: codex
+      changes:
+        - addColumn:
+            tableName: window_event
+            columns:
+              - column:
+                  name: recovered
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 008-002-add-recovered-to-activity-event
+      author: codex
+      changes:
+        - addColumn:
+            tableName: activity_event
+            columns:
+              - column:
+                  name: recovered
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 008-003-create-system-event-table
+      author: codex
+      changes:
+        - createTable:
+            tableName: system_event
+            columns:
+              - column:
+                  name: id
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: observed_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: synced
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: synced_at
+                  type: TIMESTAMP
+
+        - createIndex:
+            tableName: system_event
+            indexName: idx_system_event_sync_status
+            columns:
+              - column:
+                  name: synced
+              - column:
+                  name: synced_at
+
+        - createIndex:
+            tableName: system_event
+            indexName: idx_system_event_observed_at
+            columns:
+              - column:
+                  name: observed_at

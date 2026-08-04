@@ -1,0 +1,218 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 011-001-create-employee-daily-summary-table
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: employee_daily_summary
+      changes:
+        - createTable:
+            tableName: employee_daily_summary
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: usage_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: active_seconds
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: idle_seconds
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: tracked_seconds
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMPTZ
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: employee_daily_summary
+            baseColumnNames: employee_id
+            referencedTableName: employee
+            referencedColumnNames: id
+            constraintName: fk_employee_daily_summary_employee
+
+        - addUniqueConstraint:
+            tableName: employee_daily_summary
+            columnNames: employee_id, usage_date
+            constraintName: uq_employee_daily_summary_employee_date
+
+        - createIndex:
+            tableName: employee_daily_summary
+            indexName: idx_employee_daily_summary_employee_date
+            columns:
+              - column:
+                  name: employee_id
+              - column:
+                  name: usage_date
+
+        - createIndex:
+            tableName: employee_daily_summary
+            indexName: idx_employee_daily_summary_date_employee
+            columns:
+              - column:
+                  name: usage_date
+              - column:
+                  name: employee_id
+
+  - changeSet:
+      id: 011-002-create-employee-daily-window-usage-table
+      author: codex
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: employee_daily_window_usage
+      changes:
+        - createTable:
+            tableName: employee_daily_window_usage
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: usage_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: detail_key
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: application_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: process_name
+                  type: VARCHAR(255)
+
+              - column:
+                  name: window_title
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: document_title
+                  type: VARCHAR(500)
+
+              - column:
+                  name: file_name
+                  type: VARCHAR(255)
+
+              - column:
+                  name: active_seconds
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: idle_seconds
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: tracked_seconds
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMPTZ
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: employee_daily_window_usage
+            baseColumnNames: employee_id
+            referencedTableName: employee
+            referencedColumnNames: id
+            constraintName: fk_employee_daily_window_usage_employee
+
+        - addUniqueConstraint:
+            tableName: employee_daily_window_usage
+            columnNames: employee_id, usage_date, detail_key
+            constraintName: uq_employee_daily_window_usage_detail
+
+        - createIndex:
+            tableName: employee_daily_window_usage
+            indexName: idx_employee_daily_window_employee_date
+            columns:
+              - column:
+                  name: employee_id
+              - column:
+                  name: usage_date
+
+        - createIndex:
+            tableName: employee_daily_window_usage
+            indexName: idx_employee_daily_window_date_app
+            columns:
+              - column:
+                  name: usage_date
+              - column:
+                  name: application_name
+
+        - createIndex:
+            tableName: employee_daily_window_usage
+            indexName: idx_employee_daily_window_employee_app
+            columns:
+              - column:
+                  name: employee_id
+              - column:
+                  name: usage_date
+              - column:
+                  name: application_name
