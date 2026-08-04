@@ -18,6 +18,9 @@ public interface DeviceRepository
 
     Optional<Device> findByAgentDeviceId(String agentDeviceId);
 
+    Optional<Device> findByDeviceId(String deviceId);
+
+
     List<Device> findByEmployeeId(Long employeeId);
 
     Optional<Device> findFirstByEmployeeId(Long employeeId);

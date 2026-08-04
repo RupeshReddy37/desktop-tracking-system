@@ -77,18 +77,23 @@ public class AgentDeviceStateService {
                     agentHttpClient.registerDevice(request);
 
             if (!Boolean.TRUE.equals(response.getRegistered())
-                    || response.getDeviceId() == null) {
+                    || response.getDeviceId() == null
+                    || response.getDeviceIdPublic() == null
+                    || response.getDeviceSecret() == null) {
                 throw new IllegalStateException(
-                        "Device registration failed");
+                        "Device registration failed: missing credentials");
             }
 
             LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
             state.setServerDeviceId(response.getDeviceId());
+            state.setDeviceId(response.getDeviceIdPublic());
+            state.setDeviceSecret(response.getDeviceSecret());
             if (state.getRegisteredAt() == null) {
                 state.setRegisteredAt(now);
             }
             state.setUpdatedAt(now);
+
 
             AgentDeviceState savedState =
                     agentDeviceStateRepository.save(state);

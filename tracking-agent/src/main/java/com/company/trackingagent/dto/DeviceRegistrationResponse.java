@@ -9,7 +9,12 @@ public class DeviceRegistrationResponse {
 
     private Long deviceId;
 
+    private String deviceIdPublic;
+
+    private String deviceSecret;
+
     private Long employeeId;
+
 
     private String employeeCode;
 

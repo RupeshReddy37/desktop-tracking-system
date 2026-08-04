@@ -15,3 +15,7 @@ databaseChangeLog:
       file: db/changelog/007-add-heartbeat-and-sync-retention-columns.yaml
   - include:
       file: db/changelog/008-add-recovered-and-system-events.yaml
+  - include:
+      file: db/changelog/009-add-device-credentials.yaml
+
+

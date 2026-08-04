@@ -36,9 +36,9 @@ public class AgentSyncService {
     private final SystemEventRepository systemEventRepository;
 
     @Transactional
-    public AgentSyncResponse sync(AgentSyncRequest request) {
+    public AgentSyncResponse sync(Long authenticatedDeviceId, AgentSyncRequest request) {
 
-        Device device = deviceRepository.findById(request.getDeviceId())
+        Device device = deviceRepository.findById(authenticatedDeviceId)
                 .orElseThrow(() -> new IllegalArgumentException("Device not found"));
 
         if (!Boolean.TRUE.equals(device.getActive())) {
@@ -46,6 +46,7 @@ public class AgentSyncService {
         }
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+
         int savedWindowEvents = 0;
         int savedActivityEvents = 0;
         int savedSystemEvents = 0;
@@ -137,7 +138,7 @@ public class AgentSyncService {
                 savedSystemEvents);
 
         return toResponse(
-                request,
+                device.getId(),
                 windowEvents.size(),
                 savedWindowEvents,
                 activityEvents.size(),
@@ -145,6 +146,7 @@ public class AgentSyncService {
                 systemEvents.size(),
                 savedSystemEvents);
     }
+
 
     private void validateWindowEvents(
             List<WindowEventSyncItem> events,
@@ -210,7 +212,7 @@ public class AgentSyncService {
     }
 
     private AgentSyncResponse toResponse(
-            AgentSyncRequest request,
+            Long deviceId,
             int receivedWindowEvents,
             int savedWindowEvents,
             int receivedActivityEvents,
@@ -221,7 +223,8 @@ public class AgentSyncService {
         AgentSyncResponse response = new AgentSyncResponse();
 
         response.setSuccess(true);
-        response.setDeviceId(request.getDeviceId());
+        response.setDeviceId(deviceId);
+
         response.setReceivedWindowEvents(receivedWindowEvents);
         response.setSavedWindowEvents(savedWindowEvents);
         response.setReceivedActivityEvents(receivedActivityEvents);

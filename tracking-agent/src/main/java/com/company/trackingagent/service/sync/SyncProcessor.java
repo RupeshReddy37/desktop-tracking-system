@@ -83,6 +83,11 @@ public class SyncProcessor {
 
                         AgentDeviceState state = agentDeviceStateService.ensureRegistered();
 
+                        if (state.getDeviceId() == null || state.getDeviceSecret() == null) {
+                                log.warn("Agent device is not fully registered; skipping sync");
+                                return false;
+                        }
+
                         AgentSyncRequest request = new AgentSyncRequest();
 
                         request.setDeviceId(state.getServerDeviceId());
@@ -90,7 +95,11 @@ public class SyncProcessor {
                         request.setActivityEvents(toActivityItems(activityEvents));
                         request.setSystemEvents(toSystemItems(systemEvents));
 
-                        AgentSyncResponse response = agentHttpClient.sync(request);
+                        AgentSyncResponse response = agentHttpClient.sync(
+                                        request,
+                                        state.getDeviceId(),
+                                        state.getDeviceSecret());
+
 
                         if (!Boolean.TRUE.equals(response.getSuccess())) {
                                 throw new IllegalStateException(

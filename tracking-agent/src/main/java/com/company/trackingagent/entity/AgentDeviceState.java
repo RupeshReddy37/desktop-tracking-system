@@ -26,8 +26,15 @@ public class AgentDeviceState {
     @Column(name = "server_device_id")
     private Long serverDeviceId;
 
+    @Column(name = "device_id", length = 64)
+    private String deviceId;
+
+    @Column(name = "device_secret", length = 255)
+    private String deviceSecret;
+
     @Column(name = "registered_at")
     private LocalDateTime registeredAt;
+
 
     @Column(name = "last_sync_at")
     private LocalDateTime lastSyncAt;

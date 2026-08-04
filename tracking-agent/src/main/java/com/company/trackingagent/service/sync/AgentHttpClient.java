@@ -35,10 +35,18 @@ public class AgentHttpClient {
                                 DeviceRegistrationResponse.class);
         }
 
-        public AgentSyncResponse sync(AgentSyncRequest request)
+        public AgentSyncResponse sync(
+                        AgentSyncRequest request,
+                        String deviceId,
+                        String deviceSecret)
                         throws IOException, InterruptedException {
 
-                return post("/api/v1/sync", request, AgentSyncResponse.class);
+                return post(
+                                "/api/v1/sync",
+                                request,
+                                AgentSyncResponse.class,
+                                deviceId,
+                                deviceSecret);
         }
 
         private <T> T post(
@@ -47,17 +55,36 @@ public class AgentHttpClient {
                         Class<T> responseType)
                         throws IOException, InterruptedException {
 
+                return post(path, requestBody, responseType, null, null);
+        }
+
+        private <T> T post(
+                        String path,
+                        Object requestBody,
+                        Class<T> responseType,
+                        String deviceId,
+                        String deviceSecret)
+                        throws IOException, InterruptedException {
+
                 String body = objectMapper.writeValueAsString(requestBody);
                 Duration requestTimeout = Duration.ofSeconds(
                                 Math.max(1, trackingProperties.getSync().getRequestTimeoutSeconds()));
 
-                HttpRequest request = HttpRequest.newBuilder()
+                HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                                 .uri(URI.create(baseUrl() + path))
                                 .timeout(requestTimeout)
                                 .header("Content-Type", "application/json")
-                                .header("Accept", "application/json")
+                                .header("Accept", "application/json");
+
+                if (deviceId != null && deviceSecret != null) {
+                        requestBuilder.header("X-Device-Id", deviceId);
+                        requestBuilder.header("X-Device-Secret", deviceSecret);
+                }
+
+                HttpRequest request = requestBuilder
                                 .POST(HttpRequest.BodyPublishers.ofString(body))
                                 .build();
+
 
                 HttpResponse<String> response = httpClient().send(
                                 request,
