@@ -76,7 +76,8 @@ Run the relevant tests before submitting a pull request. Do not commit build out
 
 ## Data Collection Policy
 
-This product collects work-activity metadata. Any change that alters what data is collected, retained, or exposed must be reviewed against [DATA-COLLECTION-POLICY.md](DATA-COLLECTION-POLICY.md). Do not introduce collection of keystroke content, screenshots, clipboard contents, or browser history.
+This product collects work-activity metadata. Any change that alters what data is collected, retained, or exposed must be reviewed against [docs/DATA-COLLECTION-POLICY.md](docs/DATA-COLLECTION-POLICY.md). Do not introduce collection of keystroke content, screenshots, clipboard contents, or browser history.
+
 
 ## Reporting Issues
 

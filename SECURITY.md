@@ -24,7 +24,8 @@ You will receive an acknowledgement within a reasonable time. Please allow time 
 
 ## Security Considerations for This Product
 
-This system collects work-activity metadata. Production deployments must follow the operational controls in [DATA-COLLECTION-POLICY.md](DATA-COLLECTION-POLICY.md), including:
+This system collects work-activity metadata. Production deployments must follow the operational controls in [docs/DATA-COLLECTION-POLICY.md](docs/DATA-COLLECTION-POLICY.md), including:
+
 
 - **HTTPS** for all client-to-server communication
 - **JWT/Bearer** protection for dashboard and report APIs

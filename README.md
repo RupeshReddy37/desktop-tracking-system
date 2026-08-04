@@ -26,7 +26,8 @@ This repository is a **monorepo**: all three applications are versioned, release
 - The **server** validates and stores synced events, aggregates daily reports, and exposes REST endpoints for the dashboard and reports.
 - The **frontend** consumes the server API to render live status, daily summaries, application usage, and anomaly review.
 
-> **Data collection policy:** This system collects work-activity *metadata* only. It does **not** capture keystroke content, screenshots, clipboard contents, or browser history. See [DATA-COLLECTION-POLICY.md](DATA-COLLECTION-POLICY.md) for the full policy.
+> **Data collection policy:** This system collects work-activity *metadata* only. It does **not** capture keystroke content, screenshots, clipboard contents, or browser history. See [docs/DATA-COLLECTION-POLICY.md](docs/DATA-COLLECTION-POLICY.md) for the full policy.
+
 
 ---
 
@@ -37,7 +38,8 @@ This repository is a **monorepo**: all three applications are versioned, release
 ├── tracking-agent/          # Desktop tracking agent (Java / Spring Boot / SQLite)
 ├── tracking-server/         # Backend server (Java / Spring Boot / PostgreSQL)
 ├── tracking-frontend/       # Frontend dashboard (React / Vite)
-├── DATA-COLLECTION-POLICY.md
+├── docs/
+│   └── DATA-COLLECTION-POLICY.md
 ├── README.md
 ├── LICENSE
 ├── CONTRIBUTING.md
@@ -46,6 +48,7 @@ This repository is a **monorepo**: all three applications are versioned, release
 ├── .editorconfig
 ├── .gitattributes
 └── .gitignore
+
 ```
 
 ---

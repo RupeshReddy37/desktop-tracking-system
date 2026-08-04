@@ -13,4 +13,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - `tracking-server` — backend server (Java 21 / Spring Boot / PostgreSQL)
   - `tracking-frontend` — frontend dashboard (React / Vite)
 - Root repository standards: `README.md`, `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`, `.editorconfig`, `.gitattributes`, `.gitignore`.
-- Data collection and retention policy (`DATA-COLLECTION-POLICY.md`).
+- Data collection and retention policy (`docs/DATA-COLLECTION-POLICY.md`).
+
+
