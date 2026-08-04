@@ -1,0 +1,16 @@
+# Default owners for the repository
+* @RupeshReddy37
+
+# Backend server
+/tracking-server/ @RupeshReddy37
+
+# Desktop agent
+/tracking-agent/ @RupeshReddy37
+
+# Frontend application
+/tracking-frontend/ @RupeshReddy37
+
+# Repository standards and policy
+/README.md @RupeshReddy37
+/DATA-COLLECTION-POLICY.md @RupeshReddy37
+/SECURITY.md @RupeshReddy37

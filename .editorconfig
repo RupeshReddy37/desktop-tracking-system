@@ -1,0 +1,39 @@
+# EditorConfig — Desktop Tracking System
+# https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Java
+[*.java]
+indent_size = 4
+indent_style = tab
+
+# XML / YAML / Properties
+[*.{xml,yaml,yml,properties}]
+indent_size = 2
+indent_style = space
+
+# JavaScript / JSX / JSON / CSS
+[*.{js,jsx,json,css}]
+indent_size = 2
+indent_style = space
+
+# Markdown
+[*.md]
+trim_trailing_whitespace = false
+
+# Windows batch / PowerShell
+[*.{cmd,bat,ps1}]
+end_of_line = crlf
+
+# Shell scripts
+[*.sh]
+end_of_line = lf

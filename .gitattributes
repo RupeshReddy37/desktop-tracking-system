@@ -1,0 +1,31 @@
+# Root .gitattributes — Desktop Tracking System monorepo
+
+# Normalize line endings to LF in the repository
+* text=auto
+
+# Shell scripts must stay LF
+*.sh text eol=lf
+
+# Windows scripts use CRLF
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Maven wrapper scripts
+/mvnw text eol=lf
+**/mvnw text eol=lf
+**/mvnw.cmd text eol=crlf
+
+# Binary files should not be normalized
+*.jar binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.db binary
+*.db-shm binary
+*.db-wal binary
+*.pdf binary
+*.zip binary
+*.gz binary

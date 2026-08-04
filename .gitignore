@@ -133,6 +133,13 @@ target/surefire-reports/
 # ---------- QA / artifact folders ----------
 qa/
 
+# ---------- GitHub (allow CODEOWNERS and workflows, ignore agent tooling) ----------
+.github/*
+!.github/CODEOWNERS
+!.github/workflows/
+!.github/workflows/**
+
+
 # ---------- Misc ----------
 *.pid
 *.seed
