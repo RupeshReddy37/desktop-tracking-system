@@ -81,17 +81,15 @@ export function DashboardPage({ selectedDate, onToast }) {
     }
   }
 
+  // OPTIMIZATION: Batch dashboard and categories loading into single effect
   useEffect(() => {
     loadDashboard();
+    loadCategories();
   }, [selectedDate]);
 
   useEffect(() => {
     loadTrend(trendMode);
   }, [trendMode]);
-
-  useEffect(() => {
-    loadCategories();
-  }, [selectedDate]);
 
 
   async function openEmployeeProfile(employee) {
@@ -134,12 +132,19 @@ export function DashboardPage({ selectedDate, onToast }) {
     return employees.filter((employee) => normalizeStatus(employee.currentStatus) === statusFilter);
   }, [employees, statusFilter]);
 
+  // OPTIMIZATION: Single reduce pass instead of two separate reductions
   const productivity = useMemo(() => {
-    const totalActive = trendRows.reduce((sum, row) => sum + row.active, 0);
-    const totalIdle = trendRows.reduce((sum, row) => sum + row.idle, 0);
-    const total = totalActive + totalIdle;
-    const score = total ? Math.round((totalActive / total) * 100) : 0;
-    return { totalActive, totalIdle, total, score };
+    const totals = trendRows.reduce(
+      (acc, row) => {
+        acc.totalActive += row.active;
+        acc.totalIdle += row.idle;
+        return acc;
+      },
+      { totalActive: 0, totalIdle: 0 }
+    );
+    const total = totals.totalActive + totals.totalIdle;
+    const score = total ? Math.round((totals.totalActive / total) * 100) : 0;
+    return { ...totals, total, score };
   }, [trendRows]);
 
   function profileOperation(label) {

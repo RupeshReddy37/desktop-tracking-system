@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Plus, RefreshCw, Trash2, Pencil, Search, Tag } from 'lucide-react';
 import {
   getCategories,
@@ -67,6 +67,7 @@ export function CategoriesPage({ onToast }) {
     setEditingRuleId(null);
   }
 
+  // OPTIMIZATION: Optimistic update for category save
   async function saveCategory() {
     try {
       const payload = {
@@ -75,16 +76,22 @@ export function CategoriesPage({ onToast }) {
         productive: categoryForm.productive
       };
       if (editingCategoryId) {
+        // Optimistic update: update local state before API call
+        setCategories(cats => cats.map(c => c.id === editingCategoryId ? { ...c, ...payload } : c));
         await updateCategory(editingCategoryId, payload);
         onToast('Category updated.');
       } else {
         await createCategory(payload);
         onToast('Category created.');
+        // Reload only on create to get the new ID
+        await load();
       }
       resetCategoryForm();
-      await load();
+      if (!editingCategoryId) return; // load() already ran
     } catch (err) {
       onToast(`Save failed: ${err.message}`);
+      // Reload on error to sync state
+      await load();
     }
   }
 
@@ -93,17 +100,24 @@ export function CategoriesPage({ onToast }) {
     setCategoryForm({ name: category.name, color: category.color || '#6366f1', productive: category.productive });
   }
 
+  // OPTIMIZATION: Optimistic delete
   async function removeCategory(category) {
     if (!window.confirm(`Delete category "${category.name}" and its rules?`)) return;
     try {
+      // Optimistic update
+      setCategories(cats => cats.filter(c => c.id !== category.id));
+      setRules(rs => rs.filter(r => r.categoryId !== category.id));
+      
       await deleteCategory(category.id);
       onToast('Category deleted.');
-      await load();
     } catch (err) {
       onToast(`Delete failed: ${err.message}`);
+      // Reload on error to sync state
+      await load();
     }
   }
 
+  // OPTIMIZATION: Optimistic update for rule save
   async function saveRule() {
     if (!ruleForm.categoryId) {
       onToast('Select a category for the rule.');
@@ -118,16 +132,22 @@ export function CategoriesPage({ onToast }) {
         enabled: ruleForm.enabled
       };
       if (editingRuleId) {
+        // Optimistic update
+        setRules(rs => rs.map(r => r.id === editingRuleId ? { ...r, ...payload } : r));
         await updateCategoryRule(editingRuleId, payload);
         onToast('Rule updated.');
       } else {
         await createCategoryRule(payload);
         onToast('Rule created.');
+        // Reload only on create to get the new ID
+        await load();
       }
       resetRuleForm();
-      await load();
+      if (!editingRuleId) return; // load() already ran
     } catch (err) {
       onToast(`Save failed: ${err.message}`);
+      // Reload on error to sync state
+      await load();
     }
   }
 
@@ -142,14 +162,19 @@ export function CategoriesPage({ onToast }) {
     });
   }
 
+  // OPTIMIZATION: Optimistic delete for rule
   async function removeRule(rule) {
     if (!window.confirm(`Delete rule "${rule.pattern}"?`)) return;
     try {
+      // Optimistic update
+      setRules(rs => rs.filter(r => r.id !== rule.id));
+      
       await deleteCategoryRule(rule.id);
       onToast('Rule deleted.');
-      await load();
     } catch (err) {
       onToast(`Delete failed: ${err.message}`);
+      // Reload on error to sync state
+      await load();
     }
   }
 
@@ -162,6 +187,16 @@ export function CategoriesPage({ onToast }) {
       onToast(`Test failed: ${err.message}`);
     }
   }
+
+  // OPTIMIZATION: Pre-compute rule count per category using Map (O(1) lookup instead of O(n) filter)
+  const ruleCountByCategory = useMemo(() => {
+    const countMap = new Map();
+    rules.forEach(rule => {
+      const count = countMap.get(rule.categoryId) || 0;
+      countMap.set(rule.categoryId, count + 1);
+    });
+    return countMap;
+  }, [rules]);
 
   return (
     <div className="categories-page">
@@ -225,7 +260,7 @@ export function CategoriesPage({ onToast }) {
                 <span className="color-swatch" style={{ backgroundColor: category.color || '#6366f1' }} />
               </td>
               <td>{category.productive ? 'Yes' : 'No'}</td>
-              <td>{rules.filter((rule) => rule.categoryId === category.id).length}</td>
+              <td>{ruleCountByCategory.get(category.id) || 0}</td>
               <td>
                 <div className="row-actions">
                   <IconButton icon={Pencil} label="Edit" title="Edit" onClick={() => startEditCategory(category)} />

@@ -1,4 +1,5 @@
 import { getAccessToken, getRefreshToken, setSession, clearSession } from './tokenStorage';
+import { getCached, setCached } from './cache';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
@@ -30,7 +31,13 @@ async function refreshAccessToken() {
   return data.accessToken;
 }
 
-async function request(path, { method = 'GET', body, headers = {}, auth = true } = {}) {
+async function request(path, { method = 'GET', body, headers = {}, auth = true, cache = false, cacheTTL = 5 * 60 * 1000 } = {}) {
+  // Check cache for GET requests
+  if (cache && method === 'GET') {
+    const cached = getCached(path, { body });
+    if (cached) return cached;
+  }
+
   const url = path.startsWith('http') ? path : `${API_BASE}${path}`;
   const requestHeaders = { ...headers };
 
@@ -90,10 +97,19 @@ async function request(path, { method = 'GET', body, headers = {}, auth = true }
   }
 
   const contentType = response.headers.get('content-type') || '';
+  let result;
   if (contentType.includes('application/json')) {
-    return response.json();
+    result = await response.json();
+  } else {
+    result = await response.text();
   }
-  return response.text();
+
+  // Cache successful GET responses
+  if (cache && method === 'GET') {
+    setCached(path, result, { body }, cacheTTL);
+  }
+
+  return result;
 }
 
 export const api = {
